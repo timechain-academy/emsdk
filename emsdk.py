@@ -2323,11 +2323,17 @@ def load_file_index_list(filename):
 def load_releases_info():
   if not hasattr(load_releases_info, 'cached_info'):
     try:
-      text = open(sdk_path('emscripten-releases-tags.json'), 'r').read()
-      load_releases_info.cached_info = json.loads(text)
+      with open(sdk_path('emscripten-releases-tags.json')) as f:
+        text = f.read()
+      info = json.loads(text)
     except Exception as e:
       print('Error parsing emscripten-releases-tags.json!')
       exit_with_error(str(e))
+    for key, value in dict(info['aliases']).items():
+      info['aliases'][key + '-base'] = value + '-base'
+    for key, value in dict(info['releases']).items():
+      info['releases'][key + '-base'] = value + '-base'
+    load_releases_info.cached_info = info
 
   return load_releases_info.cached_info
 
@@ -2817,8 +2823,12 @@ def expand_sdk_name(name, activating):
   elif '-fastcomp' in fullname:
     fullname = fullname.replace('-fastcomp', '')
     backend = 'fastcomp'
-  version = fullname.replace('sdk-', '').replace('releases-', '').replace('-64bit', '').replace('tag-', '')
-  sdk = 'sdk-' if not name.startswith('releases-') else ''
+  version = fullname
+  for pattern in ('sdk-', 'releases-', '-64bit', 'tag-', '-base'):
+    version = version.replace(pattern, '')
+  sdk_prefix = 'sdk-'
+  if name.startswith('releases-') or name.endswith('-base'):
+    sdk_prefix = ''
   releases_info = load_releases_info()['releases']
   release_hash = get_release_hash(version, releases_info)
   if release_hash:
@@ -2830,7 +2840,7 @@ def expand_sdk_name(name, activating):
         backend = 'upstream'
       else:
         backend = 'fastcomp'
-    full_name = '%sreleases-%s-%s-64bit' % (sdk, backend, release_hash)
+    full_name = '%sreleases-%s-%s-64bit' % (sdk_prefix, backend, release_hash)
     print("Resolving SDK version '%s' to '%s'" % (version, full_name))
     return full_name
 
@@ -2839,7 +2849,7 @@ def expand_sdk_name(name, activating):
       backend = 'upstream'
     global extra_release_tag
     extra_release_tag = version
-    return '%sreleases-%s-%s-64bit' % (sdk, backend, version)
+    return '%sreleases-%s-%s-64bit' % (sdk_prefix, backend, version)
 
   return name
 
