@@ -2,6 +2,16 @@
 SHELL									:= /bin/bash
 
 PWD										?= pwd_unknown
+
+EMSDK									:=$(shell which emsdk)
+export EMSDK
+
+EMCC									:=$(shell which emcc)
+export EMCC
+
+POWERSHELL									:=$(shell which pwsh)
+export POWERSHELLH
+
 #space:=
 #space+=
 
@@ -125,9 +135,16 @@ emsdk-activate-latest:## emsdk-activate-latest
 	@./emsdk activate latest
 emsdk-source-emsdk_env-sh:## emsdk-source-emsdk_env-sh
 	. emsdk_env.sh && export PATH
+	  echo 'source "/Volumes/git/emsdk/emsdk_env.sh"' >> $(HOME)/.bash_profile
+
 
 init:## init
 #	@["$(shell $(SHELL))" == "/bin/zsh"] && zsh --emulate sh
+ifeq (EMSDK,)
+	$(MAKE) emsdk-install-latest
+	$(MAKE) emsdk-activate-latest
+	$(MAKE) emsdk-source-emsdk_env-sh
+endif
 	@pushd scripts && ./initialize && popd
 	@pushd .       && $(PACKAGE_MANAGER) && popd
 
@@ -179,13 +196,23 @@ report:## report					environment args
 	@echo ' CURRENT_PATH=${CURRENT_PATH}	'
 	@echo ' THIS_DIR=${THIS_DIR}	'
 	@echo ' PROJECT_NAME=${PROJECT_NAME}	'
+	@echo ''
 	@echo ' NODE_VERSION=${NODE_VERSION}	'
 	@echo ' NODE_ALIAS=${NODE_ALIAS}	'
+	@echo ' EMSDK=${EMSDK}	'
+	@echo ' EMSDK_NODE=${EMSDK_NODE}	'
+	@echo ' EMSDK_PYTHON=${EMSDK_PYTHON}	'
+	@echo ' EMCC=${EMCC}	'
+	@echo ''
+	@echo ' POWERSHELL=${POWERSHELL}	'
+	@echo ''
 	@echo ' PACKAGE_MANAGER=${PACKAGE_MANAGER}	'
 	@echo ' PACKAGE_INSTALL=${PACKAGE_INSTALL}	'
+	@echo ''
 	@echo ' PYTHON=${PYTHON}'
 	@echo ' PYTHON2=${PYTHON2}'
 	@echo ' PYTHON3=${PYTHON3}'
+	@echo ''
 	@echo ' NODE_GYP_FORCE_PYTHON=${NODE_GYP_FORCE_PYTHON}'
 	@echo ' PYTHON_VERSION=${PYTHON_VERSION}'
 	@echo ' PYTHON_VERSION_MAJOR=${PYTHON_VERSION_MAJOR}'
@@ -193,6 +220,7 @@ report:## report					environment args
 	@echo ' PIP=${PIP}'
 	@echo ' PIP2=${PIP2}'
 	@echo ' PIP3=${PIP3}'
+	@echo ''
 	@echo ' GIT_USER_NAME=${GIT_USER_NAME}	'
 	@echo ' GIT_USER_EMAIL=${GIT_USER_EMAIL}	'
 	@echo ' GIT_SERVER=${GIT_SERVER}	'
@@ -263,6 +291,8 @@ clean-nvm: ## clean-nvm
 clean-all: clean clean-nvm ## clean-all
 	@rm -rf $(find . -name node_modules)
 
+hello-js:## hello-js
+	$(EMCC) hello.c -o hello.js
 -include node.mk
 # vim: set noexpandtab:
 # vim: set setfiletype make

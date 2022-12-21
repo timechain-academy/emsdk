@@ -86,6 +86,9 @@ if hash brew 2>/dev/null; then
     if ! hash jq 2>/dev/null; then
         brew install jq
     fi
+    if ! hash pwsh 2>/dev/null; then
+        brew install --cask powershell
+    fi
     # brew install --quiet  --force python@3.9
     # curl -O https://bootstrap.pypa.io/get-pip.py
     # sudo -H python3 get-pip.py --no-warn-script-location
