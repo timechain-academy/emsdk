@@ -142,10 +142,11 @@ test-venv:## 	test virutalenv .venv
 	);
 
 clean: ## clean
+	rm -rf *.js
+	rm -rf *.wasm
+	rm -rf *.html
 	rm -rf $(find . -name package-lock.json)
 	rm -rf $(find . -name yarn.lock)
-	#rm -rf $(find ./scripts -name package-lock.json)
-	#rm -rf $(find ./scripts -name yarn.lock)
 clean-nvm: ## clean-nvm
 	@rm -rf ~/.nvm
 clean-all: clean clean-nvm ## clean-all
