@@ -1,9 +1,7 @@
 init:## init
 #	@["$(shell $(SHELL))" == "/bin/zsh"] && zsh --emulate sh
 ifeq (EMSDK,)
-	$(MAKE) emsdk-install-latest
-	$(MAKE) emsdk-activate-latest
-	$(MAKE) emsdk-source-emsdk_env-sh
+	$(MAKE) emsdk-all
 endif
 	@pushd scripts && ./initialize && popd
 	@pushd .       && $(PACKAGE_MANAGER) && popd
@@ -14,7 +12,8 @@ install:init## make init install $(PACKAGE_MANAGER) install
 .PHONY:build
 build:## build
 	#@pushd ./scripts && $(PACKAGE_MANAGER) run build && popd
-	@pushd . && $(PACKAGE_MANAGER) run build && popd
+	@echo "make build stub"
+	#@pushd . && $(PACKAGE_MANAGER) run build && popd
 .PHONY:preview
 preview:## preview
 	@$(PACKAGE_MANAGER) run preview
@@ -113,7 +112,7 @@ nvm: executable ## nvm
 	@source ~/.bashrc && nvm alias $(NODE_ALIAS) $(NODE_VERSION)
 
 .PHONY: all
-all:- executable install init build ## all - executable install init build
+all:- executable install init build emsdk-all ## all - executable install init build emsdk-all
 	@echo "make init install build release"
 
 .PHONY: submodule submodules
