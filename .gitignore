@@ -33,3 +33,10 @@ __pycache__
 /mingw
 /spidermonkey
 /binaryen
+
+.DS_Store
+a.out.js
+a.out.wasm
+hello.html
+hello.js
+hello.wasm
