@@ -1,3 +1,5 @@
+NODE:node-hello-html### node.mk
+#base-node:   ### ####
 hello-js:## hello-js
 	$(EMCC) hello.c -o hello.js
 node-hello-js:hello-js## node-hello-js

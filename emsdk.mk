@@ -1,3 +1,5 @@
+EMSDK:emsdk-all### COMMANDS
+#emsdk-four:	### ####
 emsdk-all:## emsdk-all
 	@$(MAKE) emsdk-install-latest
 	@$(MAKE) emsdk-activate-latest

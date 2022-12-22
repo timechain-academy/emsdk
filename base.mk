@@ -1,4 +1,4 @@
-base:### base.mk
+BASE:all### base.mk
 #base-four:   ### ####
 help:## help
 	@echo ''
@@ -57,10 +57,6 @@ release:
 #phony:
 #	@sed -n 's/^.PHONY//p' ${MAKEFILE_LIST} | column -t -s ':' |  sed -e 's/^/ /'
 
-.PHONY: command
-command: executable ## command	example
-	@echo "command sequence here..."
-
 .PHONY: executable
 executable:
 	chmod +x ./scripts/initialize
@@ -74,7 +70,7 @@ nvm: executable ## nvm
 	@source ~/.bashrc && nvm alias $(NODE_ALIAS) $(NODE_VERSION)
 
 .PHONY: all
-all:- executable install init build emsdk-all ## all - executable install init build emsdk-all
+all:- executable install init build emsdk-all ## all	- executable install init build emsdk-all
 	@echo "make init install build release"
 
 .PHONY: submodule submodules
